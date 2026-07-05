@@ -34,6 +34,7 @@ void my_init(Env* env, Dict* kwargs) {
 
 void my_log(Log* log, Dict* out) {
 	dict_set(out, "score", log->score);
+	dict_set(out, "perf", log->score);
 	dict_set(out, "episode_return", log->episode_return);
 	dict_set(out, "episode_length", log->episode_length);
 	dict_set(out, "n", log->n);
