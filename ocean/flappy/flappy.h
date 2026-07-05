@@ -49,6 +49,14 @@ typedef struct {
 } Pipe;
 
 typedef struct {
+	Texture2D bird;
+	Texture2D obstacle_top;
+	Texture2D obstacle_bottom;
+	Texture2D background;
+	Texture2D ground;
+} Client;
+
+typedef struct {
 	Log log;
 	float* observations;
 	float* actions;
@@ -69,9 +77,25 @@ typedef struct {
 	int pipe_gap;
 	int pipe_spacing;
 	
+	Client* client;
 	Bird* bird;
 	Pipe* pipes;
 } Flappy;
+
+Client* make_client(Flappy* env) {
+	Client* client = (Client*)calloc(1, sizeof(Client));
+
+	InitWindow(env->width, env->height, "PufferLib Flappy");
+	SetTargetFPS(60);
+
+	client->bird = LoadTexture("resources/flappy/bird.png");
+	client->obstacle_top = LoadTexture("resources/flappy/obstacle_top.png");
+	client->obstacle_bottom = LoadTexture("resources/flappy/obstacle_bottom.png");
+	client->background = LoadTexture("resources/flappy/background.png");
+	client->ground = LoadTexture("resources/flappy/ground.png");
+
+	return client;
+}
 
 void allocate(Flappy* env) {
 	env->observations = (float* )calloc(OBS_SIZE, sizeof(float));
@@ -96,6 +120,7 @@ void c_init(Flappy* env){
 	env->pipe_width = PIPE_WIDTH;
 	env->pipe_gap = PIPE_GAP;
 	env->pipe_spacing = PIPE_SPACING;
+	env->client = NULL;
 
 	env->bird = calloc(1, sizeof(Bird));
 	env->bird->height = BIRD_HEIGHT;
@@ -246,9 +271,8 @@ void c_step(Flappy* env) {
 }
 
 void c_render(Flappy* env) {
-	if (!IsWindowReady()) {
-		InitWindow(env->width, env->height, "PufferLib Flappy");
-		SetTargetFPS(60);
+	if (env->client == NULL) {
+		env->client = make_client(env);
 	}
 
 	if (IsKeyDown(KEY_ESCAPE)) {
@@ -256,45 +280,70 @@ void c_render(Flappy* env) {
 	}
 
 	BeginDrawing();
-	ClearBackground((Color){135, 206, 235, 255});
+	DrawTexturePro(
+		env->client->background,
+		(Rectangle){0, 0, env->client->background.width, env->client->background.height},
+		(Rectangle){0, 0, env->width, env->ground_y},
+		(Vector2){0, 0},
+		0,
+		WHITE
+	);
 
 	for (int i = 0; i < NUM_PIPES; i++) {
 		Pipe* pipe = &env->pipes[i];
-		DrawRectangle(
-			(int)pipe->x,
+		float bottom_y = pipe->gap_y + env->pipe_gap;
+		float bottom_height = env->ground_y - bottom_y;
+
+		DrawTexturePro(
+			env->client->obstacle_top,
+			(Rectangle){0, 0, env->client->obstacle_top.width, env->client->obstacle_top.height},
+			(Rectangle){pipe->x, 0, env->pipe_width, pipe->gap_y},
+			(Vector2){0, 0},
 			0,
-			env->pipe_width,
-			(int)pipe->gap_y,
-			(Color){30, 180, 60, 255}
+			WHITE
 		);
-		DrawRectangle(
-			(int)pipe->x,
-			(int)(pipe->gap_y + env->pipe_gap),
-			env->pipe_width,
-			env->ground_y - (int)(pipe->gap_y + env->pipe_gap),
-			(Color){30, 180, 60, 255}
+		DrawTexturePro(
+			env->client->obstacle_bottom,
+			(Rectangle){0, 0, env->client->obstacle_bottom.width, env->client->obstacle_bottom.height},
+			(Rectangle){pipe->x, bottom_y, env->pipe_width, bottom_height},
+			(Vector2){0, 0},
+			0,
+			WHITE
 		);
 	}
 
-	DrawRectangle(
-		(int)env->bird->x,
-		(int)env->bird->y,
-		(int)env->bird->width,
-		(int)env->bird->height,
-		YELLOW
-	);
-	DrawRectangle(
+	DrawTexturePro(
+		env->client->bird,
+		(Rectangle){0, 0, env->client->bird.width, env->client->bird.height},
+		(Rectangle){env->bird->x, env->bird->y, env->bird->width, env->bird->height},
+		(Vector2){0, 0},
 		0,
-		env->ground_y,
-		env->width,
-		env->height - env->ground_y,
-		(Color){222, 184, 135, 255}
+		WHITE
+	);
+
+	DrawTexturePro(
+		env->client->ground,
+		(Rectangle){0, 0, env->client->ground.width, env->client->ground.height},
+		(Rectangle){0, env->ground_y, env->width, env->height - env->ground_y},
+		(Vector2){0, 0},
+		0,
+		WHITE
 	);
 
 	EndDrawing();
 }
 
 void c_close(Flappy* env) {
+	if (env->client != NULL) {
+		if (env->client->bird.id) UnloadTexture(env->client->bird);
+		if (env->client->obstacle_top.id) UnloadTexture(env->client->obstacle_top);
+		if (env->client->obstacle_bottom.id) UnloadTexture(env->client->obstacle_bottom);
+		if (env->client->background.id) UnloadTexture(env->client->background);
+		if (env->client->ground.id) UnloadTexture(env->client->ground);
+		free(env->client);
+		env->client = NULL;
+	}
+
 	free(env->bird);
 	free(env->pipes);
 

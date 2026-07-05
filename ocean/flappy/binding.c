@@ -20,6 +20,7 @@ void my_init(Env* env, Dict* kwargs) {
 	env->pipe_width = dict_get(kwargs, "pipe_width")->value;
 	env->pipe_gap = dict_get(kwargs, "pipe_gap")->value;
 	env->pipe_spacing = dict_get(kwargs, "pipe_spacing")->value;
+	env->client = NULL;
 
 	allocate(env);
 	env->bird = calloc(1, sizeof(Bird));
