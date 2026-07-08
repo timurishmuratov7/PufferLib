@@ -7,6 +7,7 @@
 
 #define SCREEN_WIDTH 288
 #define SCREEN_HEIGHT 512
+#define RENDER_SCALE 1.75f
 
 #define BIRD_WIDTH 34
 #define BIRD_HEIGHT 24
@@ -85,7 +86,7 @@ typedef struct {
 Client* make_client(Flappy* env) {
 	Client* client = (Client*)calloc(1, sizeof(Client));
 
-	InitWindow(env->width, env->height, "PufferLib Flappy");
+	InitWindow(env->width * RENDER_SCALE, env->height * RENDER_SCALE, "PufferLib Flappy");
 	SetTargetFPS(60);
 
 	client->bird = LoadTexture("resources/flappy/bird.png");
@@ -93,6 +94,11 @@ Client* make_client(Flappy* env) {
 	client->obstacle_bottom = LoadTexture("resources/flappy/obstacle_bottom.png");
 	client->background = LoadTexture("resources/flappy/background.png");
 	client->ground = LoadTexture("resources/flappy/ground.png");
+	SetTextureFilter(client->bird, TEXTURE_FILTER_POINT);
+	SetTextureFilter(client->obstacle_top, TEXTURE_FILTER_POINT);
+	SetTextureFilter(client->obstacle_bottom, TEXTURE_FILTER_POINT);
+	SetTextureFilter(client->background, TEXTURE_FILTER_POINT);
+	SetTextureFilter(client->ground, TEXTURE_FILTER_POINT);
 
 	return client;
 }
@@ -271,6 +277,8 @@ void c_step(Flappy* env) {
 }
 
 void c_render(Flappy* env) {
+	static int frame_idx = 0;
+
 	if (env->client == NULL) {
 		env->client = make_client(env);
 	}
@@ -280,6 +288,14 @@ void c_render(Flappy* env) {
 	}
 
 	BeginDrawing();
+	ClearBackground((Color){135, 206, 235, 255});
+	BeginMode2D((Camera2D){
+		.offset = (Vector2){0, 0},
+		.target = (Vector2){0, 0},
+		.rotation = 0,
+		.zoom = RENDER_SCALE,
+	});
+
 	DrawTexturePro(
 		env->client->background,
 		(Rectangle){0, 0, env->client->background.width, env->client->background.height},
@@ -296,7 +312,7 @@ void c_render(Flappy* env) {
 
 		DrawTexturePro(
 			env->client->obstacle_top,
-			(Rectangle){0, 0, env->client->obstacle_top.width, env->client->obstacle_top.height},
+			(Rectangle){1, 1, env->client->obstacle_top.width - 2, env->client->obstacle_top.height - 2},
 			(Rectangle){pipe->x, 0, env->pipe_width, pipe->gap_y},
 			(Vector2){0, 0},
 			0,
@@ -304,7 +320,7 @@ void c_render(Flappy* env) {
 		);
 		DrawTexturePro(
 			env->client->obstacle_bottom,
-			(Rectangle){0, 0, env->client->obstacle_bottom.width, env->client->obstacle_bottom.height},
+			(Rectangle){1, 1, env->client->obstacle_bottom.width - 2, env->client->obstacle_bottom.height - 2},
 			(Rectangle){pipe->x, bottom_y, env->pipe_width, bottom_height},
 			(Vector2){0, 0},
 			0,
@@ -330,7 +346,20 @@ void c_render(Flappy* env) {
 		WHITE
 	);
 
+	EndMode2D();
 	EndDrawing();
+
+	char* frames_dir = getenv("FLAPPY_FRAMES_DIR");
+	if (frames_dir != NULL) {
+		int max_frames = atoi(getenv("FLAPPY_MAX_FRAMES"));
+		if (max_frames <= 0 || frame_idx < max_frames) {
+			TakeScreenshot(TextFormat("%s/flappy_%05d.png", frames_dir, frame_idx));
+			frame_idx += 1;
+		}
+		if (max_frames > 0 && frame_idx >= max_frames) {
+			exit(0);
+		}
+	}
 }
 
 void c_close(Flappy* env) {
