@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_horizontal_velocity_5_v1",
+  "description": "Initial horizontal velocity expanded to -5..+5 m/s under the 1 m/s touchdown limit.",
+  "parent_suite": "benchmarks/booster_landing/horizontal_touchdown_1_v1.json",
+  "physics_commit": "c48c60c8",
+  "config": "config/booster_landing.ini",
+  "checkpoint": {
+    "path": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b/booster_landing/1783818234768/0000007865368576.bin",
+    "sha256": "8c4992d32c4851268f7e0981b7697299ec9ec06f7a42d586a233200a23eef5e8",
+    "selection": "Retained 7.865B checkpoint that solved the 1 m/s broad benchmark."
+  },
+  "source_log": "logs/booster_landing/1783818234768.json",
+  "training": {
+    "source_checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b/booster_landing/1783818234768/0000007865368576.bin",
+    "checkpoint_dir": "checkpoints/dynamics_v1/horizontal_velocity_5",
+    "total_timesteps": 10000000000,
+    "total_agents": 8192
+  },
+  "baseline_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_result.json",
+  "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_exact_1500_result.json",
+  "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/horizontal_velocity_5_v1.json --output benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_result.json",
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 1500.0,
+    "downward_velocity_min": 5.0,
+    "downward_velocity_max": 25.0,
+    "x_velocity_min": -5.0,
+    "x_velocity_max": 5.0,
+    "max_landing_x_speed": 1.0
+  }
+}

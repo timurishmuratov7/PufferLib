@@ -119,6 +119,8 @@ void c_init(BoosterLanding* env) {
     env->reset_downward_velocity_max = 25.0f;
     env->reset_x_min = -40.0f;
     env->reset_x_max = 40.0f;
+    env->reset_x_velocity_min = -5.0f;
+    env->reset_x_velocity_max = 5.0f;
     env->reset_angle_min = -0.05f;
     env->reset_angle_max = 0.05f;
     env->dry_mass = 120.0f;
@@ -165,8 +167,11 @@ void c_reset(BoosterLanding* env) {
         env->reset_downward_velocity_min,
         env->reset_downward_velocity_max);
     env->x = rand_float(env, env->reset_x_min, env->reset_x_max);
-    env->x_velocity = 0.0f;
     env->angle = rand_float(env, env->reset_angle_min, env->reset_angle_max);
+    env->x_velocity = rand_float(env,
+        env->reset_x_velocity_min,
+        env->reset_x_velocity_max);
+    env->start_x_velocity = env->x_velocity;
     env->angular_velocity = 0.0f;
     env->fuel = env->initial_fuel;
     env->tick = 0;
@@ -198,6 +203,7 @@ static void add_log(BoosterLanding* env, bool success, bool timeout,
     env->log.crash += (!success && !timeout) ? 1.0f : 0.0f;
     env->log.timeout += timeout ? 1.0f : 0.0f;
     env->log.start_altitude += env->start_altitude;
+    env->log.start_horizontal_speed += fabsf(env->start_x_velocity);
     env->log.terminal_fuel += env->fuel;
     env->log.main_fuel_used += env->episode_main_fuel_used;
     env->log.side_fuel_used += env->episode_side_fuel_used;

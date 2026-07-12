@@ -55,7 +55,9 @@
     "num_threads": 16,
     "policy_seed": 42,
     "reset_seed": 100000,
-    "rollout_horizon": 128
+    "rollout_horizon": 128,
+    "x_velocity_max": 0.0,
+    "x_velocity_min": 0.0
   },
   "metrics": {
     "crash": 0.136962890625,
@@ -91,6 +93,7 @@
     "side_fuel_used": 4.195841312408447,
     "simultaneous_side_action_rate": 0.0004934428143315017,
     "start_altitude": 1500.0,
+    "start_horizontal_speed": 0.0,
     "success": 0.863037109375,
     "terminal_fuel": 4.043435096740723,
     "timeout": 0.0,

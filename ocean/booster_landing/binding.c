@@ -23,6 +23,8 @@ void my_init(Env* env, Dict* kwargs) {
     env->reset_downward_velocity_max = dict_get(kwargs, "reset_downward_velocity_max")->value;
     env->reset_x_min = dict_get(kwargs, "reset_x_min")->value;
     env->reset_x_max = dict_get(kwargs, "reset_x_max")->value;
+    env->reset_x_velocity_min = dict_get(kwargs, "reset_x_velocity_min")->value;
+    env->reset_x_velocity_max = dict_get(kwargs, "reset_x_velocity_max")->value;
     env->reset_angle_min = dict_get(kwargs, "reset_angle_min")->value;
     env->reset_angle_max = dict_get(kwargs, "reset_angle_max")->value;
     unsigned int reset_seed = (unsigned int)dict_get(kwargs, "reset_seed")->value;
@@ -69,6 +71,7 @@ void my_log(Log* log, Dict* out) {
     dict_set(out, "crash", log->crash);
     dict_set(out, "timeout", log->timeout);
     dict_set(out, "start_altitude", log->start_altitude);
+    dict_set(out, "start_horizontal_speed", log->start_horizontal_speed);
     dict_set(out, "terminal_fuel", log->terminal_fuel);
     dict_set(out, "main_fuel_used", log->main_fuel_used);
     dict_set(out, "side_fuel_used", log->side_fuel_used);

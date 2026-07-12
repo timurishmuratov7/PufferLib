@@ -24,6 +24,7 @@ typedef struct {
     float crash;
     float timeout;
     float start_altitude;
+    float start_horizontal_speed;
     float terminal_fuel;
     float main_fuel_used;
     float side_fuel_used;
@@ -88,6 +89,7 @@ typedef struct BoosterLanding {
     float velocity;
     float x;
     float x_velocity;
+    float start_x_velocity;
     float angle;
     float angular_velocity;
     float fuel;
@@ -100,6 +102,8 @@ typedef struct BoosterLanding {
     float reset_downward_velocity_max;
     float reset_x_min;
     float reset_x_max;
+    float reset_x_velocity_min;
+    float reset_x_velocity_max;
     float reset_angle_min;
     float reset_angle_max;
     float dry_mass;
