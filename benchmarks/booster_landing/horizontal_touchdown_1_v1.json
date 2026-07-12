@@ -27,8 +27,21 @@
   "continuation": {
     "source_checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1/booster_landing/1783817541990/0000004999610368.bin",
     "checkpoint_dir": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b",
+    "run_log": "logs/booster_landing/1783818234768.json",
     "total_timesteps": 10000000000,
-    "total_agents": 8192
+    "total_agents": 8192,
+    "retained_peak": {
+      "checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b/booster_landing/1783818234768/0000007865368576.bin",
+      "sha256": "8c4992d32c4851268f7e0981b7697299ec9ec06f7a42d586a233200a23eef5e8",
+      "result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_continue_10b_peak_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_continue_10b_peak_exact_1500_result.json"
+    },
+    "final": {
+      "checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b/booster_landing/1783818234768/0000009999220736.bin",
+      "sha256": "668b5db12d04d049af87c63188d1dc004ac7606956df9bc036c09023011cda89",
+      "result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_continue_10b_final_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_continue_10b_final_exact_1500_result.json"
+    }
   },
   "baseline_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_result.json",
   "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_exact_1500_result.json",
