@@ -16,6 +16,23 @@
     "total_timesteps": 2000000000,
     "total_agents": 8192
   },
+  "training_run": {
+    "run_log": "logs/booster_landing/1783859537448.json",
+    "selection_report": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_selection.json",
+    "retained_best": {
+      "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+      "sha256": "a2f71f914083f950597036bc153ca0f3698a38772943848bffc3d9a41238b4d5",
+      "selection": "Best independent-seed overall success among the five screening leaders; also best of the four finalists at exactly 1500 m.",
+      "result": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_exact_1500_result.json"
+    },
+    "directional_stress_results": {
+      "fixed_negative_5": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_fixed_neg5_result.json",
+      "fixed_positive_5": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_fixed_pos5_result.json",
+      "fixed_negative_5_exact_1500": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_fixed_neg5_exact_1500_result.json",
+      "fixed_positive_5_exact_1500": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_best_fixed_pos5_exact_1500_result.json"
+    }
+  },
   "baseline_result": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_untrained_result.json",
   "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_untrained_exact_1500_result.json",
   "fixed_negative_5_result": "benchmarks/booster_landing/horizontal_velocity_5_reflected_v1_untrained_fixed_neg5_result.json",

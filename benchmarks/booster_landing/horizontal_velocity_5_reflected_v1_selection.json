@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "suite": "booster_landing_horizontal_velocity_5_reflected_v1",
+  "run_log": "logs/booster_landing/1783859537448.json",
+  "checkpoint_directory": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448",
+  "selection_criterion": "Maximize aggregate success on independent seeds after a full fixed-seed checkpoint screen; use the exact-1500-m stress test to confirm high-altitude robustness.",
+  "screening": {
+    "checkpoint_count": 40,
+    "episodes_per_checkpoint": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "screening_leader": {
+      "step": 1469054976,
+      "successes": 8160,
+      "episodes": 8192,
+      "rate": 0.99609375
+    },
+    "selected_checkpoint": {
+      "step": 1364197376,
+      "successes": 8159,
+      "episodes": 8192,
+      "rate": 0.9959716796875
+    }
+  },
+  "independent_seed_validation": {
+    "episodes_per_seed": 8192,
+    "seeds": [
+      {
+        "reset_seed": 200000,
+        "policy_seed": 43
+      },
+      {
+        "reset_seed": 300000,
+        "policy_seed": 44
+      },
+      {
+        "reset_seed": 400000,
+        "policy_seed": 45
+      }
+    ],
+    "candidates": [
+      {
+        "step": 1364197376,
+        "successes": 24499,
+        "episodes": 24576,
+        "rate": 0.9968668619791666,
+        "mean_high_altitude_rate": 0.9890602827072144
+      },
+      {
+        "step": 1469054976,
+        "successes": 24458,
+        "episodes": 24576,
+        "rate": 0.9951985677083334,
+        "mean_high_altitude_rate": 0.978116492430369
+      },
+      {
+        "step": 1154482176,
+        "successes": 24442,
+        "episodes": 24576,
+        "rate": 0.9945475260416666,
+        "mean_high_altitude_rate": 0.979714055856069
+      },
+      {
+        "step": 1311768576,
+        "successes": 24438,
+        "episodes": 24576,
+        "rate": 0.994384765625,
+        "mean_high_altitude_rate": 0.9879182775815328
+      },
+      {
+        "step": 1102053376,
+        "successes": 24428,
+        "episodes": 24576,
+        "rate": 0.9939778645833334,
+        "mean_high_altitude_rate": 0.9772062301635742
+      }
+    ]
+  },
+  "exact_1500_validation": {
+    "episodes_per_seed": 8192,
+    "seeds": [
+      {
+        "reset_seed": 200000,
+        "policy_seed": 43
+      },
+      {
+        "reset_seed": 300000,
+        "policy_seed": 44
+      },
+      {
+        "reset_seed": 400000,
+        "policy_seed": 45
+      }
+    ],
+    "candidates": [
+      {
+        "step": 1364197376,
+        "successes": 23524,
+        "episodes": 24576,
+        "rate": 0.9571940104166666
+      },
+      {
+        "step": 1311768576,
+        "successes": 23234,
+        "episodes": 24576,
+        "rate": 0.9453938802083334
+      },
+      {
+        "step": 1469054976,
+        "successes": 23034,
+        "episodes": 24576,
+        "rate": 0.937255859375
+      },
+      {
+        "step": 1154482176,
+        "successes": 21986,
+        "episodes": 24576,
+        "rate": 0.8946126302083334
+      }
+    ]
+  },
+  "post_selection_diagnostics": {
+    "episodes_per_case": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "exact_1500_by_initial_horizontal_speed": [
+      {
+        "speed": 0.0,
+        "rate": 0.875732421875,
+        "failure_fuel_empty": 0.1124267578125,
+        "terminal_fuel": 4.254297733306885,
+        "side_fuel_used": 3.141139268875122
+      },
+      {
+        "speed": 1.0,
+        "rate": 0.9373779296875,
+        "failure_fuel_empty": 0.054443359375,
+        "terminal_fuel": 4.93817138671875,
+        "side_fuel_used": 2.837078332901001
+      },
+      {
+        "speed": 2.0,
+        "rate": 0.9752197265625,
+        "failure_fuel_empty": 0.0167236328125,
+        "terminal_fuel": 5.575622081756592,
+        "side_fuel_used": 2.452479362487793
+      },
+      {
+        "speed": 3.0,
+        "rate": 0.980712890625,
+        "failure_fuel_empty": 0.0072021484375,
+        "terminal_fuel": 5.978119850158691,
+        "side_fuel_used": 2.094456195831299
+      },
+      {
+        "speed": 4.0,
+        "rate": 0.976318359375,
+        "failure_fuel_empty": 0.0068359375,
+        "terminal_fuel": 6.199418544769287,
+        "side_fuel_used": 1.8206946849822998
+      },
+      {
+        "speed": 5.0,
+        "rate": 0.9678955078125,
+        "failure_fuel_empty": 0.0062255859375,
+        "terminal_fuel": 6.370197772979736,
+        "side_fuel_used": 1.6753236055374146
+      }
+    ],
+    "altitude_profile": [
+      {
+        "altitude": 1250.0,
+        "random_horizontal_velocity_rate": 0.9927978515625,
+        "zero_horizontal_velocity_rate": 0.997802734375,
+        "random_failure_fuel_empty": 0.0001220703125,
+        "zero_failure_fuel_empty": 0.0
+      },
+      {
+        "altitude": 1350.0,
+        "random_horizontal_velocity_rate": 0.9923095703125,
+        "zero_horizontal_velocity_rate": 0.9981689453125,
+        "random_failure_fuel_empty": 0.0013427734375,
+        "zero_failure_fuel_empty": 0.0
+      },
+      {
+        "altitude": 1450.0,
+        "random_horizontal_velocity_rate": 0.9852294921875,
+        "zero_horizontal_velocity_rate": 0.9727783203125,
+        "random_failure_fuel_empty": 0.0064697265625,
+        "zero_failure_fuel_empty": 0.02001953125
+      },
+      {
+        "altitude": 1500.0,
+        "random_horizontal_velocity_rate": 0.9581298828125,
+        "zero_horizontal_velocity_rate": 0.875732421875,
+        "random_failure_fuel_empty": 0.0286865234375,
+        "zero_failure_fuel_empty": 0.1124267578125
+      }
+    ]
+  },
+  "selected": {
+    "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+    "sha256": "a2f71f914083f950597036bc153ca0f3698a38772943848bffc3d9a41238b4d5"
+  }
+}
