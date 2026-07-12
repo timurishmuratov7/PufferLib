@@ -14,8 +14,22 @@
   "training": {
     "source_checkpoint": "checkpoints/upright_touchdown_v1/100_1500/booster_landing/1783814064583/0000004667211776.bin",
     "checkpoint_dir": "checkpoints/dynamics_v1/downward_5_25",
+    "run_log": "logs/booster_landing/1783816255095.json",
     "total_timesteps": 5000000000,
     "total_agents": 8192
+  },
+  "retained_checkpoints": {
+    "best_overall": {
+      "path": "checkpoints/dynamics_v1/downward_5_25/booster_landing/1783816255095/0000001102053376.bin",
+      "sha256": "f5aaaf705496d1b321ad0bc3166e333d27e7150ca3cad11871210e7c5ecef67c",
+      "result": "benchmarks/booster_landing/downward_5_25_v1_best_overall_result.json"
+    },
+    "best_high_altitude": {
+      "path": "checkpoints/dynamics_v1/downward_5_25/booster_landing/1783816255095/0000002517630976.bin",
+      "sha256": "25a56fbe003ad1dd5e7ad4db8b3a969492ed59c802031e86a0ad0b94e77a123b",
+      "result": "benchmarks/booster_landing/downward_5_25_v1_best_high_altitude_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/downward_5_25_v1_best_high_altitude_exact_1500_result.json"
+    }
   },
   "baseline_result": "benchmarks/booster_landing/downward_5_25_v1_untrained_result.json",
   "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/downward_5_25_v1.json --output benchmarks/booster_landing/downward_5_25_v1_untrained_result.json",
