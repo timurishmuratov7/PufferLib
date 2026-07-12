@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_controller_v1",
+  "description": "Deterministic stopping-distance vertical guidance with lateral-to-attitude guidance and pulse-density PD side-thruster control.",
+  "environment_suite": "benchmarks/booster_landing/angular_velocity_005_v1.json",
+  "script": "scripts/eval_booster_controller.py",
+  "controller": {
+    "type": "stopping_distance_attitude_pd",
+    "target_touchdown_speed": 2.0,
+    "landing_margin": 3.0,
+    "effective_fuel_fraction": 1.0,
+    "x_gain": 0.001,
+    "x_velocity_gain": 0.07,
+    "max_guidance_angle": 0.25,
+    "upright_altitude": 40.0,
+    "attitude_gain": 4.0,
+    "angular_velocity_gain": 2.5,
+    "torque_deadband": 0.003
+  },
+  "result": "benchmarks/booster_landing/booster_controller_v1_result.json",
+  "independent_seed_results": [
+    "benchmarks/booster_landing/booster_controller_v1_seed_200000_result.json",
+    "benchmarks/booster_landing/booster_controller_v1_seed_300000_result.json",
+    "benchmarks/booster_landing/booster_controller_v1_seed_400000_result.json"
+  ],
+  "exact_1500_result": "benchmarks/booster_landing/booster_controller_v1_exact_1500_result.json",
+  "fixed_angular_negative_result": "benchmarks/booster_landing/booster_controller_v1_fixed_angular_negative_result.json",
+  "fixed_angular_positive_result": "benchmarks/booster_landing/booster_controller_v1_fixed_angular_positive_result.json",
+  "independent_seed_summary": {
+    "successes": 24522,
+    "episodes": 24576,
+    "rate": 0.997802734375,
+    "mean_terminal_fuel": 34.55211893717448,
+    "mean_main_fuel_used": 63.070812232702174,
+    "mean_side_fuel_used": 2.3770666375944454,
+    "failure_horizontal_speed": 0.002197265625
+  },
+  "rl_comparison": {
+    "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+    "sha256": "a2f71f914083f950597036bc153ca0f3698a38772943848bffc3d9a41238b4d5",
+    "result": "benchmarks/booster_landing/angular_velocity_005_v1_source_result.json",
+    "independent_seed_rate": 0.9964599609375,
+    "fixed_seed_rate": 0.9954833984375,
+    "exact_1500_rate": 0.9534912109375
+  },
+  "command": ".venv/bin/python scripts/eval_booster_controller.py --output benchmarks/booster_landing/booster_controller_v1_result.json"
+}
