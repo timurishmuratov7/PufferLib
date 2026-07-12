@@ -17,6 +17,27 @@
     "total_timesteps": 10000000000,
     "total_agents": 8192
   },
+  "training_run": {
+    "run_log": "logs/booster_landing/1783819614542.json",
+    "retained_peak": {
+      "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5/booster_landing/1783819614542/0000000787480576.bin",
+      "sha256": "8c2497caef78638416a6ab46baec936b48461dfd77a79c4e168387faaac79c92",
+      "result": "benchmarks/booster_landing/horizontal_velocity_5_v1_peak_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_peak_exact_1500_result.json"
+    },
+    "final": {
+      "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5/booster_landing/1783819614542/0000009999220736.bin",
+      "sha256": "e93577bace318406eafbc244e80dab9d264ae35d6adeec48523665373e77b085",
+      "result": "benchmarks/booster_landing/horizontal_velocity_5_v1_final_result.json",
+      "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_final_exact_1500_result.json"
+    },
+    "directional_stress_results": {
+      "retained_peak_fixed_negative_5": "benchmarks/booster_landing/horizontal_velocity_5_v1_peak_fixed_neg5_result.json",
+      "retained_peak_fixed_positive_5": "benchmarks/booster_landing/horizontal_velocity_5_v1_peak_fixed_pos5_result.json",
+      "final_fixed_negative_5": "benchmarks/booster_landing/horizontal_velocity_5_v1_final_fixed_neg5_result.json",
+      "final_fixed_positive_5": "benchmarks/booster_landing/horizontal_velocity_5_v1_final_fixed_pos5_result.json"
+    }
+  },
   "baseline_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_result.json",
   "exact_1500_result": "benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_exact_1500_result.json",
   "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/horizontal_velocity_5_v1.json --output benchmarks/booster_landing/horizontal_velocity_5_v1_untrained_result.json",
