@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "suite": "booster_landing_angular_velocity_005_v1",
+  "run_log": "logs/booster_landing/1783862350032.json",
+  "checkpoint_directory": "checkpoints/dynamics_v1/angular_velocity_005/booster_landing/1783862350032",
+  "selection_criterion": "Maximize broad-range success on independent seeds; fixed angular-rate results must not expose a directional regression.",
+  "screening": {
+    "checkpoint_count": 40,
+    "episodes_per_checkpoint": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "leader": {
+      "step": 735051776,
+      "successes": 8167,
+      "episodes": 8192,
+      "rate": 0.9969482421875,
+      "high_altitude_rate": 0.9965753555297852
+    },
+    "source": {
+      "successes": 8155,
+      "episodes": 8192,
+      "rate": 0.9954833984375,
+      "high_altitude_rate": 0.9863013625144958
+    }
+  },
+  "independent_seed_validation": {
+    "episodes_per_seed": 8192,
+    "seeds": [
+      {
+        "reset_seed": 200000,
+        "policy_seed": 43
+      },
+      {
+        "reset_seed": 300000,
+        "policy_seed": 44
+      },
+      {
+        "reset_seed": 400000,
+        "policy_seed": 45
+      }
+    ],
+    "source": {
+      "successes": 24489,
+      "episodes": 24576,
+      "rate": 0.9964599609375,
+      "high_altitude_rate": 0.9867911637440219,
+      "low_altitude_rate": 0.9998574280011405
+    },
+    "trained_leader": {
+      "step": 735051776,
+      "successes": 24478,
+      "episodes": 24576,
+      "rate": 0.9960123697916666,
+      "high_altitude_rate": 0.9933955818720109,
+      "low_altitude_rate": 0.9945822640433419
+    }
+  },
+  "fixed_rate_validation": {
+    "source": {
+      "negative_rate": 0.9954833984375,
+      "positive_rate": 0.9964599609375
+    },
+    "trained_leader": {
+      "negative_rate": 0.99462890625,
+      "positive_rate": 0.9957275390625
+    }
+  },
+  "selected": {
+    "checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+    "sha256": "a2f71f914083f950597036bc153ca0f3698a38772943848bffc3d9a41238b4d5",
+    "from_training_run": false,
+    "reason": "The continuation traded low-altitude reliability for high-altitude performance and did not improve independent-seed broad success."
+  }
+}

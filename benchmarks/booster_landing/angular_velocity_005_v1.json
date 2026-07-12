@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_angular_velocity_005_v1",
+  "description": "Initial pitch angular velocity expanded to -0.05..+0.05 rad/s with horizontal reflection retained.",
+  "parent_suite": "benchmarks/booster_landing/angular_velocity_002_v1.json",
+  "config": "config/booster_landing.ini",
+  "checkpoint": {
+    "path": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+    "sha256": "a2f71f914083f950597036bc153ca0f3698a38772943848bffc3d9a41238b4d5",
+    "selection": "The reflected source remains the best broad-range policy after the 2B-step angular-velocity continuation."
+  },
+  "source_log": "logs/booster_landing/1783859537448.json",
+  "training": {
+    "source_checkpoint": "checkpoints/dynamics_v1/horizontal_velocity_5_reflected/booster_landing/1783859537448/0000001364197376.bin",
+    "checkpoint_dir": "checkpoints/dynamics_v1/angular_velocity_005",
+    "run_log": "logs/booster_landing/1783862350032.json",
+    "total_timesteps": 2000000000,
+    "total_agents": 8192,
+    "selection_report": "benchmarks/booster_landing/angular_velocity_005_v1_selection.json"
+  },
+  "source_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_result.json",
+  "source_exact_1500_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_exact_1500_result.json",
+  "source_fixed_negative_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_fixed_negative_result.json",
+  "source_fixed_positive_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_fixed_positive_result.json",
+  "source_fixed_negative_exact_1500_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_fixed_negative_exact_1500_result.json",
+  "source_fixed_positive_exact_1500_result": "benchmarks/booster_landing/angular_velocity_005_v1_source_fixed_positive_exact_1500_result.json",
+  "trained_candidate": {
+    "checkpoint": "checkpoints/dynamics_v1/angular_velocity_005/booster_landing/1783862350032/0000000735051776.bin",
+    "sha256": "7b97143d0706aad322266fcbabca94f69f8ba66b643daa678c7ca3b1ca2f7c23",
+    "result": "benchmarks/booster_landing/angular_velocity_005_v1_trained_candidate_result.json",
+    "fixed_negative_result": "benchmarks/booster_landing/angular_velocity_005_v1_trained_candidate_fixed_negative_result.json",
+    "fixed_positive_result": "benchmarks/booster_landing/angular_velocity_005_v1_trained_candidate_fixed_positive_result.json",
+    "retained": false
+  },
+  "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/angular_velocity_005_v1.json --output benchmarks/booster_landing/angular_velocity_005_v1_source_result.json",
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 1500.0,
+    "downward_velocity_min": 5.0,
+    "downward_velocity_max": 25.0,
+    "x_velocity_min": -5.0,
+    "x_velocity_max": 5.0,
+    "angular_velocity_min": -0.05,
+    "angular_velocity_max": 0.05,
+    "canonicalize_horizontal": true,
+    "max_landing_x_speed": 1.0
+  }
+}
