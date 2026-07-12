@@ -17,6 +17,19 @@
     "total_timesteps": 5000000000,
     "total_agents": 8192
   },
+  "first_training_run": {
+    "run_log": "logs/booster_landing/1783817541990.json",
+    "final_checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1/booster_landing/1783817541990/0000004999610368.bin",
+    "checkpoint_sha256": "f46c1c1a9a876a69180a3f2b6f69c270d17ba48335d79ef31b5c8caa18fe6c7d",
+    "result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_first_run_final_result.json",
+    "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_first_run_final_exact_1500_result.json"
+  },
+  "continuation": {
+    "source_checkpoint": "checkpoints/dynamics_v1/horizontal_touchdown_1/booster_landing/1783817541990/0000004999610368.bin",
+    "checkpoint_dir": "checkpoints/dynamics_v1/horizontal_touchdown_1_continue_10b",
+    "total_timesteps": 10000000000,
+    "total_agents": 8192
+  },
   "baseline_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_result.json",
   "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_exact_1500_result.json",
   "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/horizontal_touchdown_1_v1.json --output benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_result.json",
