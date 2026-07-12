@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_downward_5_25_v1",
+  "description": "First isolated dynamics stage: initial downward speed expanded to 5-25 m/s.",
+  "parent_suite": "benchmarks/booster_landing/upright_v1.json",
+  "physics_commit": "c48c60c8",
+  "config": "config/booster_landing.ini",
+  "checkpoint": {
+    "path": "checkpoints/upright_touchdown_v1/100_1500/booster_landing/1783814064583/0000004667211776.bin",
+    "sha256": "4c8678b77f716d533a2dd1c69c8811756cc4557a1dfb281883141c968f43862a",
+    "selection": "Untrained upright-v1 checkpoint for paired zero-shot evaluation."
+  },
+  "source_log": "logs/booster_landing/1783814064583.json",
+  "training": {
+    "source_checkpoint": "checkpoints/upright_touchdown_v1/100_1500/booster_landing/1783814064583/0000004667211776.bin",
+    "checkpoint_dir": "checkpoints/dynamics_v1/downward_5_25",
+    "total_timesteps": 5000000000,
+    "total_agents": 8192
+  },
+  "baseline_result": "benchmarks/booster_landing/downward_5_25_v1_untrained_result.json",
+  "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/downward_5_25_v1.json --output benchmarks/booster_landing/downward_5_25_v1_untrained_result.json",
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 1500.0,
+    "downward_velocity_min": 5.0,
+    "downward_velocity_max": 25.0
+  }
+}

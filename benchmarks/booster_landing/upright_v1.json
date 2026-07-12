@@ -17,6 +17,8 @@
     "reset_seed": 100000,
     "policy_seed": 42,
     "altitude_min": 100.0,
-    "altitude_max": 1500.0
+    "altitude_max": 1500.0,
+    "downward_velocity_min": 2.0,
+    "downward_velocity_max": 15.0
   }
 }

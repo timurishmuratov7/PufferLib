@@ -34,6 +34,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-seed", type=int)
     parser.add_argument("--altitude-min", type=float)
     parser.add_argument("--altitude-max", type=float)
+    parser.add_argument("--downward-velocity-min", type=float)
+    parser.add_argument("--downward-velocity-max", type=float)
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--num-buffers", type=int, default=2)
     parser.add_argument("--num-threads", type=int, default=16)
@@ -113,6 +115,8 @@ def evaluate(
     policy_seed: int,
     altitude_min: float,
     altitude_max: float,
+    downward_velocity_min: float,
+    downward_velocity_max: float,
     gpu_id: int,
     num_buffers: int,
     num_threads: int,
@@ -124,6 +128,12 @@ def evaluate(
         raise ValueError("episodes must be divisible by num_buffers")
     if altitude_max < altitude_min:
         raise ValueError("altitude_max must be greater than or equal to altitude_min")
+    if downward_velocity_min < 0.0:
+        raise ValueError("downward_velocity_min must be nonnegative")
+    if downward_velocity_max < downward_velocity_min:
+        raise ValueError(
+            "downward_velocity_max must be greater than or equal to downward_velocity_min"
+        )
 
     args = load_puffer_args()
     rollout_horizon = int(args["env"]["rollout_horizon"])
@@ -131,6 +141,8 @@ def evaluate(
     args["env"]["reset_seed"] = reset_seed
     args["env"]["reset_altitude_min"] = altitude_min
     args["env"]["reset_altitude_max"] = altitude_max
+    args["env"]["reset_downward_velocity_min"] = downward_velocity_min
+    args["env"]["reset_downward_velocity_max"] = downward_velocity_max
     args["vec"]["total_agents"] = episodes
     args["vec"]["num_buffers"] = num_buffers
     args["vec"]["num_threads"] = num_threads
@@ -207,6 +219,12 @@ def main() -> None:
     policy_seed = int(suite_value(cli.policy_seed, evaluation, "policy_seed"))
     altitude_min = float(suite_value(cli.altitude_min, evaluation, "altitude_min"))
     altitude_max = float(suite_value(cli.altitude_max, evaluation, "altitude_max"))
+    downward_velocity_min = float(
+        suite_value(cli.downward_velocity_min, evaluation, "downward_velocity_min")
+    )
+    downward_velocity_max = float(
+        suite_value(cli.downward_velocity_max, evaluation, "downward_velocity_max")
+    )
 
     metrics, puffer_args = evaluate(
         checkpoint=checkpoint,
@@ -215,6 +233,8 @@ def main() -> None:
         policy_seed=policy_seed,
         altitude_min=altitude_min,
         altitude_max=altitude_max,
+        downward_velocity_min=downward_velocity_min,
+        downward_velocity_max=downward_velocity_max,
         gpu_id=cli.gpu_id,
         num_buffers=cli.num_buffers,
         num_threads=cli.num_threads,
@@ -235,6 +255,8 @@ def main() -> None:
             "policy_seed": policy_seed,
             "altitude_min": altitude_min,
             "altitude_max": altitude_max,
+            "downward_velocity_min": downward_velocity_min,
+            "downward_velocity_max": downward_velocity_max,
             "rollout_horizon": puffer_args["train"]["horizon"],
             "num_buffers": cli.num_buffers,
             "num_threads": cli.num_threads,

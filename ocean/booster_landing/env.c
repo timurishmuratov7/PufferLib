@@ -115,8 +115,8 @@ void c_init(BoosterLanding* env) {
     env->initial_downward_velocity = 35.0f;
     env->reset_altitude_min = 100.0f;
     env->reset_altitude_max = 1500.0f;
-    env->reset_downward_velocity_min = 2.0f;
-    env->reset_downward_velocity_max = 15.0f;
+    env->reset_downward_velocity_min = 5.0f;
+    env->reset_downward_velocity_max = 25.0f;
     env->reset_x_min = -40.0f;
     env->reset_x_max = 40.0f;
     env->reset_angle_min = -0.05f;

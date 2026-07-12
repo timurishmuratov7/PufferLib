@@ -59,6 +59,8 @@
   "evaluation": {
     "altitude_max": 1500.0,
     "altitude_min": 100.0,
+    "downward_velocity_max": 15.0,
+    "downward_velocity_min": 2.0,
     "episodes": 8192,
     "num_buffers": 2,
     "num_threads": 16,
