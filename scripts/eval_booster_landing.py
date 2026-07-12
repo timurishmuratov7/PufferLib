@@ -38,6 +38,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--downward-velocity-max", type=float)
     parser.add_argument("--x-velocity-min", type=float)
     parser.add_argument("--x-velocity-max", type=float)
+    parser.add_argument("--angular-velocity-min", type=float)
+    parser.add_argument("--angular-velocity-max", type=float)
     parser.add_argument("--canonicalize-horizontal", type=int, choices=(0, 1))
     parser.add_argument("--max-landing-x-speed", type=float)
     parser.add_argument("--gpu-id", type=int, default=0)
@@ -123,6 +125,8 @@ def evaluate(
     downward_velocity_max: float,
     x_velocity_min: float,
     x_velocity_max: float,
+    angular_velocity_min: float,
+    angular_velocity_max: float,
     canonicalize_horizontal: bool,
     max_landing_x_speed: float,
     gpu_id: int,
@@ -144,6 +148,10 @@ def evaluate(
         )
     if x_velocity_max < x_velocity_min:
         raise ValueError("x_velocity_max must be greater than or equal to x_velocity_min")
+    if angular_velocity_max < angular_velocity_min:
+        raise ValueError(
+            "angular_velocity_max must be greater than or equal to angular_velocity_min"
+        )
     if max_landing_x_speed < 0.0:
         raise ValueError("max_landing_x_speed must be nonnegative")
 
@@ -157,6 +165,8 @@ def evaluate(
     args["env"]["reset_downward_velocity_max"] = downward_velocity_max
     args["env"]["reset_x_velocity_min"] = x_velocity_min
     args["env"]["reset_x_velocity_max"] = x_velocity_max
+    args["env"]["reset_angular_velocity_min"] = angular_velocity_min
+    args["env"]["reset_angular_velocity_max"] = angular_velocity_max
     args["env"]["canonicalize_horizontal"] = int(canonicalize_horizontal)
     args["env"]["max_landing_x_speed"] = max_landing_x_speed
     args["vec"]["total_agents"] = episodes
@@ -243,6 +253,16 @@ def main() -> None:
     )
     x_velocity_min = float(suite_value(cli.x_velocity_min, evaluation, "x_velocity_min"))
     x_velocity_max = float(suite_value(cli.x_velocity_max, evaluation, "x_velocity_max"))
+    angular_velocity_min = float(
+        evaluation.get("angular_velocity_min", 0.0)
+        if cli.angular_velocity_min is None
+        else cli.angular_velocity_min
+    )
+    angular_velocity_max = float(
+        evaluation.get("angular_velocity_max", 0.0)
+        if cli.angular_velocity_max is None
+        else cli.angular_velocity_max
+    )
     canonicalize_horizontal = bool(
         evaluation.get("canonicalize_horizontal", False)
         if cli.canonicalize_horizontal is None
@@ -263,6 +283,8 @@ def main() -> None:
         downward_velocity_max=downward_velocity_max,
         x_velocity_min=x_velocity_min,
         x_velocity_max=x_velocity_max,
+        angular_velocity_min=angular_velocity_min,
+        angular_velocity_max=angular_velocity_max,
         canonicalize_horizontal=canonicalize_horizontal,
         max_landing_x_speed=max_landing_x_speed,
         gpu_id=cli.gpu_id,
@@ -289,6 +311,8 @@ def main() -> None:
             "downward_velocity_max": downward_velocity_max,
             "x_velocity_min": x_velocity_min,
             "x_velocity_max": x_velocity_max,
+            "angular_velocity_min": angular_velocity_min,
+            "angular_velocity_max": angular_velocity_max,
             "canonicalize_horizontal": canonicalize_horizontal,
             "max_landing_x_speed": max_landing_x_speed,
             "rollout_horizon": puffer_args["train"]["horizon"],

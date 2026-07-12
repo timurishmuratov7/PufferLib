@@ -29,6 +29,10 @@ void my_init(Env* env, Dict* kwargs) {
         (bool)dict_get(kwargs, "canonicalize_horizontal")->value;
     env->reset_angle_min = dict_get(kwargs, "reset_angle_min")->value;
     env->reset_angle_max = dict_get(kwargs, "reset_angle_max")->value;
+    env->reset_angular_velocity_min =
+        dict_get(kwargs, "reset_angular_velocity_min")->value;
+    env->reset_angular_velocity_max =
+        dict_get(kwargs, "reset_angular_velocity_max")->value;
     unsigned int reset_seed = (unsigned int)dict_get(kwargs, "reset_seed")->value;
     env->rng += reset_seed * 0x9E3779B9u;
     env->benchmark_single_episode =

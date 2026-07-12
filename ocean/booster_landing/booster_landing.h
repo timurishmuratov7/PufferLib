@@ -108,6 +108,8 @@ typedef struct BoosterLanding {
     float reset_x_velocity_max;
     float reset_angle_min;
     float reset_angle_max;
+    float reset_angular_velocity_min;
+    float reset_angular_velocity_max;
     float dry_mass;
     float initial_fuel;
     float gravity;

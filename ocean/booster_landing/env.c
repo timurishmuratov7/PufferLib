@@ -125,6 +125,8 @@ void c_init(BoosterLanding* env) {
     env->reset_x_velocity_max = 5.0f;
     env->reset_angle_min = -0.05f;
     env->reset_angle_max = 0.05f;
+    env->reset_angular_velocity_min = -0.02f;
+    env->reset_angular_velocity_max = 0.02f;
     env->dry_mass = 120.0f;
     env->initial_fuel = 100.0f;
     env->gravity = 9.81f;
@@ -184,7 +186,9 @@ void c_reset(BoosterLanding* env) {
     env->start_x_velocity = env->x_velocity;
     env->horizontal_reflected =
         env->canonicalize_horizontal && env->start_x_velocity > 0.0f;
-    env->angular_velocity = 0.0f;
+    env->angular_velocity = rand_float(env,
+        env->reset_angular_velocity_min,
+        env->reset_angular_velocity_max);
     env->fuel = env->initial_fuel;
     env->tick = 0;
     env->awaiting_rollout_reset = false;
