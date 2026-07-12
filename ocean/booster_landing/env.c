@@ -110,6 +110,8 @@ void c_init(BoosterLanding* env) {
     env->rollout_step = 0;
     env->benchmark_single_episode = false;
     env->benchmark_complete = false;
+    env->canonicalize_horizontal = false;
+    env->horizontal_reflected = false;
 
     env->initial_altitude = 2000.0f;
     env->initial_downward_velocity = 35.0f;
@@ -149,12 +151,20 @@ void c_init(BoosterLanding* env) {
 }
 
 void compute_observations(BoosterLanding* env) {
+    float horizontal_frame = env->horizontal_reflected ? -1.0f : 1.0f;
     env->observations[0] = clampf(env->altitude / env->initial_altitude, 0.0f, 1.0f);
     env->observations[1] = clampf(env->velocity / env->max_velocity_obs, -1.0f, 1.0f);
-    env->observations[2] = env->world_width > 0.0f ? clampf(env->x / env->world_width, -1.0f, 1.0f) : 0.0f;
-    env->observations[3] = clampf(env->x_velocity / env->max_x_velocity_obs, -1.0f, 1.0f);
-    env->observations[4] = clampf(env->angle / (float)M_PI, -1.0f, 1.0f);
-    env->observations[5] = clampf(env->angular_velocity / env->max_angular_velocity_obs, -1.0f, 1.0f);
+    env->observations[2] = env->world_width > 0.0f
+        ? clampf(horizontal_frame * env->x / env->world_width, -1.0f, 1.0f)
+        : 0.0f;
+    env->observations[3] = clampf(
+        horizontal_frame * env->x_velocity / env->max_x_velocity_obs,
+        -1.0f, 1.0f);
+    env->observations[4] = clampf(
+        horizontal_frame * env->angle / (float)M_PI, -1.0f, 1.0f);
+    env->observations[5] = clampf(
+        horizontal_frame * env->angular_velocity / env->max_angular_velocity_obs,
+        -1.0f, 1.0f);
     env->observations[6] = env->initial_fuel > 0.0f ?
         clampf(env->fuel / env->initial_fuel, 0.0f, 1.0f) : 0.0f;
     env->observations[7] = landing_safety_risk(env);
@@ -172,6 +182,8 @@ void c_reset(BoosterLanding* env) {
         env->reset_x_velocity_min,
         env->reset_x_velocity_max);
     env->start_x_velocity = env->x_velocity;
+    env->horizontal_reflected =
+        env->canonicalize_horizontal && env->start_x_velocity > 0.0f;
     env->angular_velocity = 0.0f;
     env->fuel = env->initial_fuel;
     env->tick = 0;
@@ -296,8 +308,12 @@ void c_step(BoosterLanding* env) {
     float previous_safety_potential = landing_safety_potential(env);
 
     bool main_command = (int)env->actions[0] == BURN;
-    bool left_command = (int)env->actions[1] == SIDE_FIRE;
-    bool right_command = (int)env->actions[2] == SIDE_FIRE;
+    bool policy_left_command = (int)env->actions[1] == SIDE_FIRE;
+    bool policy_right_command = (int)env->actions[2] == SIDE_FIRE;
+    bool left_command = env->horizontal_reflected
+        ? policy_right_command : policy_left_command;
+    bool right_command = env->horizontal_reflected
+        ? policy_left_command : policy_right_command;
     env->episode_main_action_steps += main_command ? 1.0f : 0.0f;
     env->episode_left_action_steps += left_command ? 1.0f : 0.0f;
     env->episode_right_action_steps += right_command ? 1.0f : 0.0f;

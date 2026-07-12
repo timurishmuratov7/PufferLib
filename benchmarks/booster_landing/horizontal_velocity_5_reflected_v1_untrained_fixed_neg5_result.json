@@ -1,0 +1,128 @@
+{
+  "altitude_bins": {
+    "1000_1250": {
+      "episodes": 1460,
+      "rate": 0.982191801071167,
+      "successes": 1434,
+      "wilson_95": [
+        0.9740342391445773,
+        0.9878185568093771
+      ]
+    },
+    "100_500": {
+      "episodes": 2342,
+      "rate": 0.9880443811416626,
+      "successes": 2314,
+      "wilson_95": [
+        0.982775005582074,
+        0.9917154022859932
+      ]
+    },
+    "1250_1500": {
+      "episodes": 1467,
+      "rate": 0.9720517992973328,
+      "successes": 1426,
+      "wilson_95": [
+        0.9623057959392762,
+        0.9793320615565815
+      ]
+    },
+    "1500_plus": {
+      "episodes": 0,
+      "rate": 0.0,
+      "successes": 0,
+      "wilson_95": null
+    },
+    "500_750": {
+      "episodes": 1457,
+      "rate": 0.9945092797279358,
+      "successes": 1449,
+      "wilson_95": [
+        0.9892026191703773,
+        0.9972151685362285
+      ]
+    },
+    "750_1000": {
+      "episodes": 1466,
+      "rate": 0.9979535937309265,
+      "successes": 1463,
+      "wilson_95": [
+        0.9940006020911561,
+        0.9993038058355393
+      ]
+    }
+  },
+  "checkpoint": {
+    "path": "checkpoints/dynamics_v1/horizontal_velocity_5/booster_landing/1783819614542/0000000787480576.bin",
+    "sha256": "8c2497caef78638416a6ab46baec936b48461dfd77a79c4e168387faaac79c92"
+  },
+  "evaluation": {
+    "altitude_max": 1500.0,
+    "altitude_min": 100.0,
+    "canonicalize_horizontal": true,
+    "downward_velocity_max": 25.0,
+    "downward_velocity_min": 5.0,
+    "episodes": 8192,
+    "max_landing_x_speed": 1.0,
+    "num_buffers": 2,
+    "num_threads": 16,
+    "policy_seed": 42,
+    "reset_seed": 100000,
+    "rollout_horizon": 128,
+    "x_velocity_max": -5.0,
+    "x_velocity_min": -5.0
+  },
+  "metrics": {
+    "crash": 0.012939453125,
+    "episode_fraction_1000_1250": 0.17822265625,
+    "episode_fraction_100_500": 0.285888671875,
+    "episode_fraction_1250_1500": 0.1790771484375,
+    "episode_fraction_1500_plus": 0.0,
+    "episode_fraction_500_750": 0.1778564453125,
+    "episode_fraction_750_1000": 0.178955078125,
+    "episode_length": 473.7818603515625,
+    "episode_return": 1.0268077850341797,
+    "failure_angle": 0.0023193359375,
+    "failure_angular_velocity": 0.003662109375,
+    "failure_fuel_empty": 0.0,
+    "failure_horizontal_speed": 0.00341796875,
+    "failure_off_pad": 0.0,
+    "failure_out_of_bounds": 0.0,
+    "failure_unrecoverable_fuel": 0.0,
+    "failure_vertical_speed": 0.0079345703125,
+    "left_action_rate": 0.24886269867420197,
+    "main_action_rate": 0.5495001673698425,
+    "main_fuel_used": 77.5948486328125,
+    "n": 8192.0,
+    "perf": 0.987060546875,
+    "right_action_rate": 0.25153785943984985,
+    "score": 0.987060546875,
+    "score_1000_1250": 0.982191801071167,
+    "score_100_500": 0.9880443811416626,
+    "score_1250_1500": 0.9720517992973328,
+    "score_1500_plus": 0.0,
+    "score_500_750": 0.9945092797279358,
+    "score_750_1000": 0.9979535937309265,
+    "side_fuel_used": 7.711446762084961,
+    "simultaneous_side_action_rate": 0.12272912263870239,
+    "start_altitude": 800.3135986328125,
+    "start_horizontal_speed": 5.0,
+    "success": 0.987060546875,
+    "terminal_fuel": 14.693378448486328,
+    "timeout": 0.0,
+    "touchdown_angle": 0.008161140605807304,
+    "touchdown_angular_velocity": 0.015060418285429478,
+    "touchdown_horizontal_speed": 0.4061088263988495,
+    "touchdown_vertical_speed": 3.0609962940216064
+  },
+  "schema_version": 1,
+  "score": {
+    "rate": 0.987060546875,
+    "successes": 8086,
+    "wilson_95": [
+      0.9843749278370096,
+      0.989289587282619
+    ]
+  },
+  "suite": "booster_landing_horizontal_velocity_5_reflected_v1"
+}

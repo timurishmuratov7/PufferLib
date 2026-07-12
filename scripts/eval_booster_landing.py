@@ -38,6 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--downward-velocity-max", type=float)
     parser.add_argument("--x-velocity-min", type=float)
     parser.add_argument("--x-velocity-max", type=float)
+    parser.add_argument("--canonicalize-horizontal", type=int, choices=(0, 1))
     parser.add_argument("--max-landing-x-speed", type=float)
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--num-buffers", type=int, default=2)
@@ -122,6 +123,7 @@ def evaluate(
     downward_velocity_max: float,
     x_velocity_min: float,
     x_velocity_max: float,
+    canonicalize_horizontal: bool,
     max_landing_x_speed: float,
     gpu_id: int,
     num_buffers: int,
@@ -155,6 +157,7 @@ def evaluate(
     args["env"]["reset_downward_velocity_max"] = downward_velocity_max
     args["env"]["reset_x_velocity_min"] = x_velocity_min
     args["env"]["reset_x_velocity_max"] = x_velocity_max
+    args["env"]["canonicalize_horizontal"] = int(canonicalize_horizontal)
     args["env"]["max_landing_x_speed"] = max_landing_x_speed
     args["vec"]["total_agents"] = episodes
     args["vec"]["num_buffers"] = num_buffers
@@ -240,6 +243,11 @@ def main() -> None:
     )
     x_velocity_min = float(suite_value(cli.x_velocity_min, evaluation, "x_velocity_min"))
     x_velocity_max = float(suite_value(cli.x_velocity_max, evaluation, "x_velocity_max"))
+    canonicalize_horizontal = bool(
+        evaluation.get("canonicalize_horizontal", False)
+        if cli.canonicalize_horizontal is None
+        else cli.canonicalize_horizontal
+    )
     max_landing_x_speed = float(
         suite_value(cli.max_landing_x_speed, evaluation, "max_landing_x_speed")
     )
@@ -255,6 +263,7 @@ def main() -> None:
         downward_velocity_max=downward_velocity_max,
         x_velocity_min=x_velocity_min,
         x_velocity_max=x_velocity_max,
+        canonicalize_horizontal=canonicalize_horizontal,
         max_landing_x_speed=max_landing_x_speed,
         gpu_id=cli.gpu_id,
         num_buffers=cli.num_buffers,
@@ -280,6 +289,7 @@ def main() -> None:
             "downward_velocity_max": downward_velocity_max,
             "x_velocity_min": x_velocity_min,
             "x_velocity_max": x_velocity_max,
+            "canonicalize_horizontal": canonicalize_horizontal,
             "max_landing_x_speed": max_landing_x_speed,
             "rollout_horizon": puffer_args["train"]["horizon"],
             "num_buffers": cli.num_buffers,

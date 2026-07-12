@@ -84,6 +84,8 @@ typedef struct BoosterLanding {
     bool awaiting_rollout_reset;
     bool benchmark_single_episode;
     bool benchmark_complete;
+    bool canonicalize_horizontal;
+    bool horizontal_reflected;
 
     float altitude;
     float velocity;
