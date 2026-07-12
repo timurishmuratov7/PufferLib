@@ -40,6 +40,7 @@
     "altitude_min": 100.0,
     "altitude_max": 1500.0,
     "downward_velocity_min": 5.0,
-    "downward_velocity_max": 25.0
+    "downward_velocity_max": 25.0,
+    "max_landing_x_speed": 8.0
   }
 }

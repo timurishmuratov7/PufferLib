@@ -36,6 +36,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--altitude-max", type=float)
     parser.add_argument("--downward-velocity-min", type=float)
     parser.add_argument("--downward-velocity-max", type=float)
+    parser.add_argument("--max-landing-x-speed", type=float)
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--num-buffers", type=int, default=2)
     parser.add_argument("--num-threads", type=int, default=16)
@@ -117,6 +118,7 @@ def evaluate(
     altitude_max: float,
     downward_velocity_min: float,
     downward_velocity_max: float,
+    max_landing_x_speed: float,
     gpu_id: int,
     num_buffers: int,
     num_threads: int,
@@ -134,6 +136,8 @@ def evaluate(
         raise ValueError(
             "downward_velocity_max must be greater than or equal to downward_velocity_min"
         )
+    if max_landing_x_speed < 0.0:
+        raise ValueError("max_landing_x_speed must be nonnegative")
 
     args = load_puffer_args()
     rollout_horizon = int(args["env"]["rollout_horizon"])
@@ -143,6 +147,7 @@ def evaluate(
     args["env"]["reset_altitude_max"] = altitude_max
     args["env"]["reset_downward_velocity_min"] = downward_velocity_min
     args["env"]["reset_downward_velocity_max"] = downward_velocity_max
+    args["env"]["max_landing_x_speed"] = max_landing_x_speed
     args["vec"]["total_agents"] = episodes
     args["vec"]["num_buffers"] = num_buffers
     args["vec"]["num_threads"] = num_threads
@@ -225,6 +230,9 @@ def main() -> None:
     downward_velocity_max = float(
         suite_value(cli.downward_velocity_max, evaluation, "downward_velocity_max")
     )
+    max_landing_x_speed = float(
+        suite_value(cli.max_landing_x_speed, evaluation, "max_landing_x_speed")
+    )
 
     metrics, puffer_args = evaluate(
         checkpoint=checkpoint,
@@ -235,6 +243,7 @@ def main() -> None:
         altitude_max=altitude_max,
         downward_velocity_min=downward_velocity_min,
         downward_velocity_max=downward_velocity_max,
+        max_landing_x_speed=max_landing_x_speed,
         gpu_id=cli.gpu_id,
         num_buffers=cli.num_buffers,
         num_threads=cli.num_threads,
@@ -257,6 +266,7 @@ def main() -> None:
             "altitude_max": altitude_max,
             "downward_velocity_min": downward_velocity_min,
             "downward_velocity_max": downward_velocity_max,
+            "max_landing_x_speed": max_landing_x_speed,
             "rollout_horizon": puffer_args["train"]["horizon"],
             "num_buffers": cli.num_buffers,
             "num_threads": cli.num_threads,

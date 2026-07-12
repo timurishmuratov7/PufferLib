@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_horizontal_touchdown_1_v1",
+  "description": "Horizontal touchdown speed tightened to 1 m/s before adding initial lateral velocity.",
+  "parent_suite": "benchmarks/booster_landing/downward_5_25_v1.json",
+  "physics_commit": "c48c60c8",
+  "config": "config/booster_landing.ini",
+  "checkpoint": {
+    "path": "checkpoints/dynamics_v1/downward_5_25/booster_landing/1783816255095/0000002517630976.bin",
+    "sha256": "25a56fbe003ad1dd5e7ad4db8b3a969492ed59c802031e86a0ad0b94e77a123b",
+    "selection": "High-altitude 5-25 m/s checkpoint before tightening horizontal touchdown speed."
+  },
+  "source_log": "logs/booster_landing/1783816255095.json",
+  "training": {
+    "source_checkpoint": "checkpoints/dynamics_v1/downward_5_25/booster_landing/1783816255095/0000002517630976.bin",
+    "checkpoint_dir": "checkpoints/dynamics_v1/horizontal_touchdown_1",
+    "total_timesteps": 5000000000,
+    "total_agents": 8192
+  },
+  "baseline_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_result.json",
+  "exact_1500_result": "benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_exact_1500_result.json",
+  "command": "scripts/eval_booster_landing.py --suite benchmarks/booster_landing/horizontal_touchdown_1_v1.json --output benchmarks/booster_landing/horizontal_touchdown_1_v1_untrained_result.json",
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 1500.0,
+    "downward_velocity_min": 5.0,
+    "downward_velocity_max": 25.0,
+    "max_landing_x_speed": 1.0
+  }
+}

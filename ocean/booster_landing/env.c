@@ -133,7 +133,7 @@ void c_init(BoosterLanding* env) {
     env->dt = 0.05f;
     env->max_landing_speed = 5.0f;
     env->terminal_reward_scale = 1.0f;
-    env->max_landing_x_speed = 8.0f;
+    env->max_landing_x_speed = 1.0f;
     env->max_landing_angle = 0.03f;
     env->max_landing_angular_velocity = 0.05f;
     env->world_width = 420.0f;
