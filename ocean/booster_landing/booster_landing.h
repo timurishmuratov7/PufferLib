@@ -81,6 +81,8 @@ typedef struct BoosterLanding {
     int terminal_display_ticks;
     int last_outcome;
     bool awaiting_rollout_reset;
+    bool benchmark_single_episode;
+    bool benchmark_complete;
 
     float altitude;
     float velocity;

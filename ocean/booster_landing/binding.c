@@ -25,6 +25,10 @@ void my_init(Env* env, Dict* kwargs) {
     env->reset_x_max = dict_get(kwargs, "reset_x_max")->value;
     env->reset_angle_min = dict_get(kwargs, "reset_angle_min")->value;
     env->reset_angle_max = dict_get(kwargs, "reset_angle_max")->value;
+    unsigned int reset_seed = (unsigned int)dict_get(kwargs, "reset_seed")->value;
+    env->rng += reset_seed * 0x9E3779B9u;
+    env->benchmark_single_episode =
+        (bool)dict_get(kwargs, "benchmark_single_episode")->value;
     env->dry_mass = dict_get(kwargs, "dry_mass")->value;
     env->initial_fuel = dict_get(kwargs, "initial_fuel")->value;
     env->gravity = dict_get(kwargs, "gravity")->value;
@@ -100,5 +104,11 @@ void my_log(Log* log, Dict* out) {
         log->successes_1250_1500 / log->episodes_1250_1500 : 0.0f);
     dict_set(out, "score_1500_plus", log->episodes_1500_plus > 0.0f ?
         log->successes_1500_plus / log->episodes_1500_plus : 0.0f);
+    dict_set(out, "episode_fraction_100_500", log->episodes_100_500);
+    dict_set(out, "episode_fraction_500_750", log->episodes_500_750);
+    dict_set(out, "episode_fraction_750_1000", log->episodes_750_1000);
+    dict_set(out, "episode_fraction_1000_1250", log->episodes_1000_1250);
+    dict_set(out, "episode_fraction_1250_1500", log->episodes_1250_1500);
+    dict_set(out, "episode_fraction_1500_plus", log->episodes_1500_plus);
     dict_set(out, "n", log->n);
 }

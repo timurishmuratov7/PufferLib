@@ -108,6 +108,8 @@ void c_init(BoosterLanding* env) {
     env->max_episode_steps = 1200;
     env->rollout_horizon = 128;
     env->rollout_step = 0;
+    env->benchmark_single_episode = false;
+    env->benchmark_complete = false;
 
     env->initial_altitude = 2000.0f;
     env->initial_downward_velocity = 35.0f;
@@ -169,6 +171,7 @@ void c_reset(BoosterLanding* env) {
     env->fuel = env->initial_fuel;
     env->tick = 0;
     env->awaiting_rollout_reset = false;
+    env->benchmark_complete = false;
     env->terminal_display_ticks = 0;
     env->last_outcome = 0;
     env->episode_return = 0.0f;
@@ -247,6 +250,12 @@ static void add_log(BoosterLanding* env, bool success, bool timeout,
 }
 
 void c_step(BoosterLanding* env) {
+    if (env->benchmark_complete) {
+        env->rewards[0] = 0.0f;
+        env->terminals[0] = 1.0f;
+        return;
+    }
+
     if (env->terminal_display_ticks > 0) {
         env->terminal_display_ticks -= 1;
         env->rewards[0] = 0.0f;
@@ -365,6 +374,11 @@ void c_step(BoosterLanding* env) {
             env->terminal_display_ticks = 90;
             env->last_outcome = success ? 1 : (timeout ? 3 : 2);
             env->last_touchdown_velocity = env->velocity;
+            return;
+        }
+
+        if (env->benchmark_single_episode) {
+            env->benchmark_complete = true;
             return;
         }
 

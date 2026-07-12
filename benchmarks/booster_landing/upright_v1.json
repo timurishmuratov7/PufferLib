@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_upright_v1",
+  "description": "Frozen 2D upright-touchdown baseline before harder reset dynamics.",
+  "physics_commit": "c48c60c8",
+  "config": "config/booster_landing.ini",
+  "checkpoint": {
+    "path": "checkpoints/upright_touchdown_v1/100_1500/booster_landing/1783814064583/0000004667211776.bin",
+    "sha256": "4c8678b77f716d533a2dd1c69c8811756cc4557a1dfb281883141c968f43862a",
+    "selection": "Nearest checkpoint to the best logged 1250-1500 m window."
+  },
+  "source_log": "logs/booster_landing/1783814064583.json",
+  "baseline_result": "benchmarks/booster_landing/upright_v1_result.json",
+  "command": "scripts/eval_booster_landing.py --output benchmarks/booster_landing/upright_v1_result.json",
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 1500.0
+  }
+}
