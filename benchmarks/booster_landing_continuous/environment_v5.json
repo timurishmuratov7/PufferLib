@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_continuous_environment_v5",
+  "description": "Continuous booster environment with tanh-squashed Gaussian actions and discrete-reward parity.",
+  "env_name": "booster_landing_continuous",
+  "config": "config/booster_landing_continuous.ini",
+  "parent_suite": "benchmarks/booster_landing_continuous/environment_v4.json",
+  "action_space": {
+    "raw_policy_space": "Two unbounded Gaussian samples.",
+    "normalized_controller_space": "Apply tanh independently to obtain two commands in (-1, 1).",
+    "main_throttle": "Rescale normalized action 0 from (-1, 1) to throttle (0, 1).",
+    "attitude": "Use normalized action 1 directly as signed side-thrust authority."
+  },
+  "reward": {
+    "terminal": "Successful landing +1; any failure -1.",
+    "potential": "-max(stopping-distance risk, required-fuel risk)",
+    "potential_scale": 0.1,
+    "gamma": 0.9999,
+    "direct_step_penalty": 0.0,
+    "final_clamp": [-1.0, 1.0]
+  },
+  "evaluation": {
+    "episodes": 8192,
+    "reset_seed": 100000,
+    "policy_seed": 42,
+    "altitude_min": 100.0,
+    "altitude_max": 750.0,
+    "downward_velocity_min": 2.0,
+    "downward_velocity_max": 15.0,
+    "x_velocity_min": 0.0,
+    "x_velocity_max": 0.0,
+    "angular_velocity_min": 0.0,
+    "angular_velocity_max": 0.0,
+    "canonicalize_horizontal": true,
+    "max_landing_x_speed": 2.0
+  }
+}

@@ -26,6 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONTROLLER_SUITE = (
     REPO_ROOT / "benchmarks/booster_landing/angular_velocity_005_v1.json"
 )
+ACTION_SQUASH_EPSILON = 1e-6
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +34,7 @@ def parse_args() -> argparse.Namespace:
         description="Evaluate deterministic booster guidance on fixed native resets."
     )
     parser.add_argument("--suite", type=Path, default=DEFAULT_CONTROLLER_SUITE)
+    parser.add_argument("--env-name")
     parser.add_argument("--episodes", type=int)
     parser.add_argument("--reset-seed", type=int)
     parser.add_argument("--altitude-min", type=float)
@@ -82,10 +84,20 @@ def altitude_bin_name(altitude: np.ndarray) -> np.ndarray:
     return names
 
 
+def inverse_tanh_action(normalized_action: np.ndarray) -> np.ndarray:
+    bounded = np.clip(
+        normalized_action,
+        -1.0 + ACTION_SQUASH_EPSILON,
+        1.0 - ACTION_SQUASH_EPSILON,
+    )
+    return np.arctanh(bounded)
+
+
 def run_controller(cli: argparse.Namespace) -> dict:
     suite_path = cli.suite.resolve()
     suite = load_suite(suite_path)
     evaluation = suite["evaluation"]
+    env_name = cli.env_name or suite.get("env_name", "booster_landing")
 
     episodes = int(suite_value(cli.episodes, evaluation, "episodes"))
     reset_seed = int(suite_value(cli.reset_seed, evaluation, "reset_seed"))
@@ -136,7 +148,7 @@ def run_controller(cli: argparse.Namespace) -> dict:
             "angular_velocity_max must be greater than or equal to angular_velocity_min"
         )
 
-    args = load_puffer_args()
+    args = load_puffer_args(env_name)
     env_args = args["env"]
     env_args["benchmark_single_episode"] = 1
     env_args["reset_seed"] = reset_seed
@@ -162,6 +174,11 @@ def run_controller(cli: argparse.Namespace) -> dict:
         rewards = pointer_array(vec.rewards_ptr, (episodes,))
         terminals = pointer_array(vec.terminals_ptr, (episodes,))
         actions = np.zeros((episodes, vec.num_atns), dtype=np.float32)
+        if vec.num_atns not in (2, 3):
+            raise RuntimeError(
+                f"expected 2 continuous or 3 discrete actions, got {vec.num_atns}"
+            )
+        continuous_actions = vec.num_atns == 2
 
         vec.reset()
         initial_observations = observations.copy()
@@ -246,22 +263,37 @@ def run_controller(cli: argparse.Namespace) -> dict:
                 -1.0,
                 1.0,
             )
-            torque_accumulator[active] += normalized_torque[active]
-            left_command = torque_accumulator >= 1.0
-            right_command = torque_accumulator <= -1.0
-            torque_accumulator[left_command] -= 1.0
-            torque_accumulator[right_command] += 1.0
-
             actions.fill(0.0)
-            actions[active, 0] = main_command[active]
-            actions[active, 1] = left_command[active]
-            actions[active, 2] = right_command[active]
+            if continuous_actions:
+                attitude_command = normalized_torque
+                left_level = np.maximum(attitude_command, 0.0)
+                right_level = np.maximum(-attitude_command, 0.0)
+                normalized_main_command = np.where(
+                    main_command, 1.0, -1.0
+                )
+                actions[active, 0] = inverse_tanh_action(
+                    normalized_main_command[active]
+                )
+                actions[active, 1] = inverse_tanh_action(
+                    attitude_command[active]
+                )
+            else:
+                torque_accumulator[active] += normalized_torque[active]
+                left_command = torque_accumulator >= 1.0
+                right_command = torque_accumulator <= -1.0
+                torque_accumulator[left_command] -= 1.0
+                torque_accumulator[right_command] += 1.0
+                left_level = left_command.astype(np.float64)
+                right_level = right_command.astype(np.float64)
+                actions[active, 0] = main_command[active]
+                actions[active, 1] = left_command[active]
+                actions[active, 2] = right_command[active]
 
             fuel_before = fuel.copy()
             active_before = active.copy()
             main_steps[active_before] += main_command[active_before]
-            left_steps[active_before] += left_command[active_before]
-            right_steps[active_before] += right_command[active_before]
+            left_steps[active_before] += left_level[active_before]
+            right_steps[active_before] += right_level[active_before]
 
             vec.cpu_step(actions.ctypes.data)
             ticks[active_before] += 1
@@ -270,7 +302,7 @@ def run_controller(cli: argparse.Namespace) -> dict:
             fuel_after = observations[:, 6] * initial_fuel
             fuel_drop = np.maximum(fuel_before - fuel_after, 0.0)
             requested_main = main_command * fuel_burn_rate * dt
-            requested_side = (left_command + right_command) * side_fuel_burn_rate * dt
+            requested_side = (left_level + right_level) * side_fuel_burn_rate * dt
             requested_total = requested_main + requested_side
             split = np.divide(
                 fuel_drop,
@@ -396,7 +428,17 @@ def run_controller(cli: argparse.Namespace) -> dict:
     }
 
     controller = {
-        "type": "stopping_distance_attitude_pd",
+        "type": (
+            "stopping_distance_continuous_attitude_pd"
+            if continuous_actions
+            else "stopping_distance_attitude_pd"
+        ),
+        "action_mode": "continuous" if continuous_actions else "discrete",
+        "continuous_action_transform": (
+            "throttle=(tanh(raw_main)+1)/2; attitude=tanh(raw_attitude)"
+            if continuous_actions
+            else None
+        ),
         "target_touchdown_speed": cli.target_touchdown_speed,
         "landing_margin": cli.landing_margin,
         "effective_fuel_fraction": cli.effective_fuel_fraction,
@@ -411,6 +453,7 @@ def run_controller(cli: argparse.Namespace) -> dict:
     return {
         "schema_version": 1,
         "suite": suite["id"],
+        "env_name": env_name,
         "controller": controller,
         "evaluation": {
             "episodes": episodes,

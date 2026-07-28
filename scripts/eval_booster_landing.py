@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--suite", type=Path, default=DEFAULT_SUITE)
     parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--env-name")
     parser.add_argument("--episodes", type=int)
     parser.add_argument("--reset-seed", type=int)
     parser.add_argument("--policy-seed", type=int)
@@ -36,12 +37,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--altitude-max", type=float)
     parser.add_argument("--downward-velocity-min", type=float)
     parser.add_argument("--downward-velocity-max", type=float)
+    parser.add_argument("--x-min", type=float)
+    parser.add_argument("--x-max", type=float)
     parser.add_argument("--x-velocity-min", type=float)
     parser.add_argument("--x-velocity-max", type=float)
     parser.add_argument("--angular-velocity-min", type=float)
     parser.add_argument("--angular-velocity-max", type=float)
     parser.add_argument("--canonicalize-horizontal", type=int, choices=(0, 1))
+    parser.add_argument("--max-landing-speed", type=float)
     parser.add_argument("--max-landing-x-speed", type=float)
+    parser.add_argument("--max-landing-angle", type=float)
+    parser.add_argument("--max-landing-angular-velocity", type=float)
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--num-buffers", type=int, default=2)
     parser.add_argument("--num-threads", type=int, default=16)
@@ -71,7 +77,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_puffer_args() -> dict:
+def load_puffer_args(env_name: str = "booster_landing") -> dict:
     # load_config parses sys.argv. Hide this script's arguments while it reads
     # the regular booster config, then restore them for normal error reporting.
     argv = sys.argv
@@ -79,7 +85,7 @@ def load_puffer_args() -> dict:
         sys.argv = [argv[0]]
         from pufferlib.pufferl import load_config
 
-        return load_config("booster_landing")
+        return load_config(env_name)
     finally:
         sys.argv = argv
 
@@ -116,6 +122,7 @@ def altitude_bin_results(metrics: dict[str, float], episodes: int) -> dict:
 
 def evaluate(
     checkpoint: Path,
+    env_name: str,
     episodes: int,
     reset_seed: int,
     policy_seed: int,
@@ -123,12 +130,17 @@ def evaluate(
     altitude_max: float,
     downward_velocity_min: float,
     downward_velocity_max: float,
+    x_min: float | None,
+    x_max: float | None,
     x_velocity_min: float,
     x_velocity_max: float,
     angular_velocity_min: float,
     angular_velocity_max: float,
     canonicalize_horizontal: bool,
+    max_landing_speed: float | None,
     max_landing_x_speed: float,
+    max_landing_angle: float | None,
+    max_landing_angular_velocity: float | None,
     gpu_id: int,
     num_buffers: int,
     num_threads: int,
@@ -146,6 +158,8 @@ def evaluate(
         raise ValueError(
             "downward_velocity_max must be greater than or equal to downward_velocity_min"
         )
+    if x_min is not None and x_max is not None and x_max < x_min:
+        raise ValueError("x_max must be greater than or equal to x_min")
     if x_velocity_max < x_velocity_min:
         raise ValueError("x_velocity_max must be greater than or equal to x_velocity_min")
     if angular_velocity_max < angular_velocity_min:
@@ -155,7 +169,7 @@ def evaluate(
     if max_landing_x_speed < 0.0:
         raise ValueError("max_landing_x_speed must be nonnegative")
 
-    args = load_puffer_args()
+    args = load_puffer_args(env_name)
     rollout_horizon = int(args["env"]["rollout_horizon"])
     args["env"]["benchmark_single_episode"] = 1
     args["env"]["reset_seed"] = reset_seed
@@ -163,12 +177,22 @@ def evaluate(
     args["env"]["reset_altitude_max"] = altitude_max
     args["env"]["reset_downward_velocity_min"] = downward_velocity_min
     args["env"]["reset_downward_velocity_max"] = downward_velocity_max
+    if x_min is not None:
+        args["env"]["reset_x_min"] = x_min
+    if x_max is not None:
+        args["env"]["reset_x_max"] = x_max
     args["env"]["reset_x_velocity_min"] = x_velocity_min
     args["env"]["reset_x_velocity_max"] = x_velocity_max
     args["env"]["reset_angular_velocity_min"] = angular_velocity_min
     args["env"]["reset_angular_velocity_max"] = angular_velocity_max
     args["env"]["canonicalize_horizontal"] = int(canonicalize_horizontal)
+    if max_landing_speed is not None:
+        args["env"]["max_landing_speed"] = max_landing_speed
     args["env"]["max_landing_x_speed"] = max_landing_x_speed
+    if max_landing_angle is not None:
+        args["env"]["max_landing_angle"] = max_landing_angle
+    if max_landing_angular_velocity is not None:
+        args["env"]["max_landing_angular_velocity"] = max_landing_angular_velocity
     args["vec"]["total_agents"] = episodes
     args["vec"]["num_buffers"] = num_buffers
     args["vec"]["num_threads"] = num_threads
@@ -226,6 +250,7 @@ def main() -> None:
     suite_path = cli.suite.resolve()
     suite = load_suite(suite_path)
     evaluation = suite["evaluation"]
+    env_name = cli.env_name or suite.get("env_name", "booster_landing")
 
     checkpoint_arg = cli.checkpoint or Path(suite["checkpoint"]["path"])
     checkpoint = resolve_repo_path(checkpoint_arg).resolve()
@@ -253,6 +278,8 @@ def main() -> None:
     )
     x_velocity_min = float(suite_value(cli.x_velocity_min, evaluation, "x_velocity_min"))
     x_velocity_max = float(suite_value(cli.x_velocity_max, evaluation, "x_velocity_max"))
+    x_min = evaluation.get("x_min") if cli.x_min is None else cli.x_min
+    x_max = evaluation.get("x_max") if cli.x_max is None else cli.x_max
     angular_velocity_min = float(
         evaluation.get("angular_velocity_min", 0.0)
         if cli.angular_velocity_min is None
@@ -268,12 +295,28 @@ def main() -> None:
         if cli.canonicalize_horizontal is None
         else cli.canonicalize_horizontal
     )
+    max_landing_speed = (
+        evaluation.get("max_landing_speed")
+        if cli.max_landing_speed is None
+        else cli.max_landing_speed
+    )
     max_landing_x_speed = float(
         suite_value(cli.max_landing_x_speed, evaluation, "max_landing_x_speed")
+    )
+    max_landing_angle = (
+        evaluation.get("max_landing_angle")
+        if cli.max_landing_angle is None
+        else cli.max_landing_angle
+    )
+    max_landing_angular_velocity = (
+        evaluation.get("max_landing_angular_velocity")
+        if cli.max_landing_angular_velocity is None
+        else cli.max_landing_angular_velocity
     )
 
     metrics, puffer_args = evaluate(
         checkpoint=checkpoint,
+        env_name=env_name,
         episodes=episodes,
         reset_seed=reset_seed,
         policy_seed=policy_seed,
@@ -281,12 +324,17 @@ def main() -> None:
         altitude_max=altitude_max,
         downward_velocity_min=downward_velocity_min,
         downward_velocity_max=downward_velocity_max,
+        x_min=x_min,
+        x_max=x_max,
         x_velocity_min=x_velocity_min,
         x_velocity_max=x_velocity_max,
         angular_velocity_min=angular_velocity_min,
         angular_velocity_max=angular_velocity_max,
         canonicalize_horizontal=canonicalize_horizontal,
+        max_landing_speed=max_landing_speed,
         max_landing_x_speed=max_landing_x_speed,
+        max_landing_angle=max_landing_angle,
+        max_landing_angular_velocity=max_landing_angular_velocity,
         gpu_id=cli.gpu_id,
         num_buffers=cli.num_buffers,
         num_threads=cli.num_threads,
@@ -297,6 +345,7 @@ def main() -> None:
     result = {
         "schema_version": 1,
         "suite": suite["id"],
+        "env_name": env_name,
         "checkpoint": {
             "path": str(checkpoint_arg),
             "sha256": checkpoint_hash,
@@ -309,12 +358,17 @@ def main() -> None:
             "altitude_max": altitude_max,
             "downward_velocity_min": downward_velocity_min,
             "downward_velocity_max": downward_velocity_max,
+            "x_min": puffer_args["env"]["reset_x_min"],
+            "x_max": puffer_args["env"]["reset_x_max"],
             "x_velocity_min": x_velocity_min,
             "x_velocity_max": x_velocity_max,
             "angular_velocity_min": angular_velocity_min,
             "angular_velocity_max": angular_velocity_max,
             "canonicalize_horizontal": canonicalize_horizontal,
-            "max_landing_x_speed": max_landing_x_speed,
+            "max_landing_speed": puffer_args["env"]["max_landing_speed"],
+            "max_landing_x_speed": puffer_args["env"]["max_landing_x_speed"],
+            "max_landing_angle": puffer_args["env"]["max_landing_angle"],
+            "max_landing_angular_velocity": puffer_args["env"]["max_landing_angular_velocity"],
             "rollout_horizon": puffer_args["train"]["horizon"],
             "num_buffers": cli.num_buffers,
             "num_threads": cli.num_threads,

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "id": "booster_landing_continuous_relaxed_100_250_v1",
+  "description": "First successful continuous PPO curriculum stage: 100-250 m, zero initial horizontal velocity, and temporarily relaxed touchdown limits.",
+  "env_name": "booster_landing_continuous",
+  "config": "config/booster_landing_continuous.ini",
+  "parent_suite": "benchmarks/booster_landing_continuous/environment_v1.json",
+  "training": {
+    "source": "fresh weights",
+    "checkpoint_dir": "checkpoints/continuous_v1/100_250_vx0_relaxed",
+    "run_id": "1783867130368",
+    "run_log": "logs/booster_landing_continuous/1783867130368.json",
+    "total_timesteps": 3000000000,
+    "total_agents": 8192,
+    "learning_rate": 0.00003,
+    "altitude_min": 100.0,
+    "altitude_max": 250.0,
+    "initial_horizontal_velocity_min": 0.0,
+    "initial_horizontal_velocity_max": 0.0,
+    "max_landing_speed": 8.0,
+    "max_landing_x_speed": 2.0,
+    "max_landing_angle": 0.06,
+    "max_landing_angular_velocity": 0.1
+  },
+  "retained_checkpoint": {
+    "path": "checkpoints/continuous_v1/100_250_vx0_relaxed/booster_landing_continuous/1783867130368/0000001049624576.bin",
+    "sha256": "f8b1ce140a706747cec8e54b5b6c1ebf7cb94aa4a40ca4a8cddda284f2d2fbcc",
+    "selection": "Best independent-seed relaxed score among checkpoints screened from 735M through 1.364B steps. The final checkpoint is not retained."
+  },
+  "training_curve": {
+    "score_near_217m": 0.010518264539918377,
+    "score_near_646m": 0.7470416821101132,
+    "score_near_1074m": 0.9933352246880531,
+    "score_near_1502m": 0.3541692516468816,
+    "score_near_1931m": 0.0,
+    "final_score": 0.0
+  },
+  "relaxed_result": "benchmarks/booster_landing_continuous/relaxed_100_250_v1_result.json",
+  "relaxed_independent_seed_results": [
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_seed_200000_result.json",
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_seed_300000_result.json",
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_seed_400000_result.json"
+  ],
+  "relaxed_independent_seed_summary": {
+    "successes": 24537,
+    "episodes": 24576,
+    "rate": 0.9984130859375,
+    "mean_terminal_fuel": 48.1413942972819,
+    "failure_vertical_speed": 0.0015462239583333333,
+    "failure_horizontal_speed": 0.000040690104166666664,
+    "other_failure_rate": 0.0
+  },
+  "strict_result": "benchmarks/booster_landing_continuous/relaxed_100_250_v1_strict_result.json",
+  "strict_independent_seed_results": [
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_strict_seed_200000_result.json",
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_strict_seed_300000_result.json",
+    "benchmarks/booster_landing_continuous/relaxed_100_250_v1_strict_seed_400000_result.json"
+  ],
+  "strict_independent_seed_summary": {
+    "successes": 5635,
+    "episodes": 24576,
+    "rate": 0.22928873697916666,
+    "failure_vertical_speed": 0.7464192708333334,
+    "failure_horizontal_speed": 0.047770182291666664,
+    "failure_angle": 0.0435791015625,
+    "failure_angular_velocity": 0.00008138020833333333
+  },
+  "fixed_seed_threshold_audit": {
+    "relaxed": 0.996826171875,
+    "vertical_speed_7": 0.9300537109375,
+    "vertical_speed_6": 0.619873046875,
+    "vertical_speed_5": 0.2481689453125,
+    "horizontal_speed_1": 0.93017578125,
+    "angle_003": 0.9517822265625,
+    "angular_velocity_005": 0.996826171875
+  },
+  "next_stage": "Load the retained checkpoint and tighten only maximum vertical touchdown speed from 8 to 7 m/s. Keep every other curriculum condition unchanged."
+}
